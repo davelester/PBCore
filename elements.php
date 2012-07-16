@@ -7,7 +7,13 @@ $elements = array(
 		'name'  => 'date',
 	),
 	
-//URI for the Internet Archive landing page for the item. Identifier source is always the internet archive.
+//Maps to Date Broadcast (assetDate type:broadcast).
+	array(
+		'label' => 'Date Broadcast', 
+		'name'  => 'dateBroadcast',
+	),
+	
+//AUTOFILL: URI for the Omeka landing page for the item. Identifier source is always Omeka.
     array(
 		'label' => 'Identifier', 
 		'name'  => 'identifier',
@@ -35,21 +41,75 @@ $elements = array(
          '_refines'    => 'Title',
         ),
 
-//We don't currently have this field in our mapping doc.    
+//We should have this field in our mapping doc.    
     array(
 		'label' => 'Description', 
 		'name'  => 'description',
      ),
 
-//See if we can autofill make editable. 	
+//AUTOFILL: but make editable. 	
 	array(
 		'label' => 'Creator', 
 		'name'  => 'creator',
 	),
 	
+//We should have this field in our mapping doc.    
+    array(
+		'label' => 'Interviewee', 
+		'name'  => 'interviewee',
+     ),
+     
+//We should have this field in our mapping doc.    
+    array(
+		'label' => 'Host', 
+		'name'  => 'host',
+     ),
+     
+//We should have this field in our mapping doc.    
+    array(
+		'label' => 'Interviewer', 
+		'name'  => 'interviewer',
+     ),
+	
 	array(
 		'label' => 'Rights', 
 		'name'  => 'rights',
+	),
+
+//Physical format comes with a picklist
+	array(
+		'label'  => 'Physical Format', 
+		'name'  => 'physicalFormat', 
+		'description' => 'The format of a particular version or rendition of a media item as it exists in an actual physical form that occupies physical space (e.g., a tape on a shelf), rather than as a digital file residing on a server or hard drive.', 
+		'data_type'   => 'Tiny Text',
+	),
+	
+//Display digital format also comes with a picklist. Mimetype of original uploaded file. Should be the mimetype of whatever the instantiation is. Potentially prepopulate. 
+	array(
+		'label' => 'Format', 
+		'name'  => 'format',
+	),
+	
+//This is not hardcoded.
+	array(
+		'label' => 'Physical Location', 
+		'name'  => 'physicalLocation',
+		'description' => 'An address for a physical media item. For an organization or producer acting as caretaker of a media resource, this field may contain information about a specific shelf location for an item, including an organization\'s name, departmental name, shelf ID and contact information.',
+		'data_type'   => 'Tiny Text',
+	 ),
+		
+//AUTOFILL: Internet Archive landing page for the item. Maps to instantiationLocation in PBCore XML.
+	array(
+		'label' => 'Digital Location', 
+		'name'  => 'digitalLocation',
+		'description' => 'An address for a digital media item. Employs an unambiguous reference or identifier for a digital rendition/instantiation of a media item and may include domain, path, filename or html page. This includes URIs for each digital file format created by the Internet Archive (will have multiple values).',
+		'data_type'   => 'Tiny Text',
+	  ),
+	  
+//AUTOFILL: Can we automatically detect duration of files when they are uploaded?
+	array(
+		'label' => 'Duration', 
+		'name'  => 'duration',
 	),
 	
 	array(
@@ -72,36 +132,6 @@ $elements = array(
 		'description' => 'Any other notes or information about the media item, including bibliography/research information, contact information, and legacy metadata.',
 		'data_type'   => 'Text',
 	),
-
-//Physical format comes with a picklist
-	array(
-		'label'  => 'Physical Format', 
-		'name'  => 'physicalFormat', 
-		'description' => 'The format of a particular version or rendition of a media item as it exists in an actual physical form that occupies physical space (e.g., a tape on a shelf), rather than as a digital file residing on a server or hard drive.', 
-		'data_type'   => 'Tiny Text',
-	),
-	
-//Instantiation Identifer will be hardcoded.
-	array(
-		'label' => 'Physical Location', 
-		'name'  => 'physicalLocation',
-		'description' => 'An address for a physical media item. For an organization or producer acting as caretaker of a media resource, this field may contain information about a specific shelf location for an item, including an organization\'s name, departmental name, shelf ID and contact information.',
-		'data_type'   => 'Tiny Text',
-	 ),
-	
-//Display digital format also comes with a picklist. Mimetype of original uploaded file. Should be the mimetype of whatever the instantiation is. Potentially prepopulate. 
-	array(
-		'label' => 'Format', 
-		'name'  => 'format',
-	),
-		
-//Instantiation Identifer will be hardcoded.
-	array(
-		'label' => 'Digital Location', 
-		'name'  => 'digitalLocation',
-		'description' => 'An address for a digital media item. Employs an unambiguous reference or identifier for a digital rendition/instantiation of a media item and may include domain, path, filename or html page. This includes URIs for each digital file format created by the Internet Archive (will have multiple values).',
-		'data_type'   => 'Tiny Text',
-	  ),
 	
 	array(
 		'label' => 'Transcription', 
