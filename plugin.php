@@ -1,239 +1,183 @@
 <?php
-add_plugin_hook('install', 'PBCorePlugin::install');
-add_plugin_hook('uninstall', 'PBCorePlugin::uninstall');
-add_plugin_hook('upgrade', 'PBCorePlugin::upgrade');
-add_plugin_hook('admin_append_to_plugin_uninstall_message', 'PBCorePlugin::adminAppendToPluginUninstallMessage');
-add_filter('define_response_contexts', 'PBCorePlugin::outputReponseContext');
-add_filter('define_action_contexts', 'PBCorePlugin::outputActionContext');
-add_plugin_hook('public_theme_header', 'PBCorePlugin::themeHeader');
+add_plugin_hook('install', 'install');
 
-class PBCorePlugin
+function install() {
+	$elementSetMetadata = array(
+	    'name'        => "PBCore", 
+	    'description' => "PBCore is metadata standard for audiovisual media developed by the public broadcasting community. See http://www.pbcore.org/documentation/"
+	);
+	$elements = array(
+
+	//Maps to Date Created (assetDate type:created).
+		array(
+			'label' => 'Date', 
+			'name'  => 'Date',
+		),
+
+	//Maps to Date Broadcast (assetDate type:broadcast).
+		array(
+			'label' => 'Date Broadcast', 
+			'name'  => 'Date Broadcast',
+		),
+
+	//AUTOFILL: URI for the Omeka landing page for the item. Identifier source is always Omeka.
+	    array(
+			'label' => 'Identifier', 
+			'name'  => 'Identifier',
+	    ),
+
+	//Item title
+	    array(
+			'label' => 'Title', 
+	        'name'  => 'Title',
+	    ),
+
+		array(
+	   		'label' => 'Episode Title', 
+	   		'name'  => 'Episode Title',
+	   		'description' => 'The episode or piece to which a media item contributed.',
+	   		'data_type'   => 'Tiny Text',
+	   		'_refines'    => 'Title',
+	       ), 
+
+		array(
+	  		'label' => 'Series Title', 
+	  		'name'  => 'Series Title',
+	  		'description' =>'If applicable, the larger series to which the episode or piece contributed.',
+	  		'data_type'   => 'Tiny Text',
+	         '_refines'    => 'Title',
+	        ),
+
+	//We should have this field in our mapping doc.    
+	    array(
+			'label' => 'Description', 
+			'name'  => 'Description',
+	     ),
+
+	//AUTOFILL: but make editable. 	
+		array(
+			'label' => 'Creator', 
+			'name'  => 'Creator',
+		),
+
+	//We should have this field in our mapping doc.    
+	    array(
+			'label' => 'Interviewee', 
+			'name'  => 'Interviewee',
+	     ),
+
+	//We should have this field in our mapping doc.    
+	    array(
+			'label' => 'Host', 
+			'name'  => 'Host',
+	     ),
+
+	//We should have this field in our mapping doc.    
+	    array(
+			'label' => 'Interviewer', 
+			'name'  => 'Interviewer',
+	     ),
+
+		array(
+			'label' => 'Rights', 
+			'name'  => 'Rights',
+		),
+
+	//Physical format comes with a picklist
+		array(
+			'label'  => 'Physical Format', 
+			'name'  => 'Physical Format', 
+			'description' => 'The format of a particular version or rendition of a media item as it exists in an actual physical form that occupies physical space (e.g., a tape on a shelf), rather than as a digital file residing on a server or hard drive.', 
+			'data_type'   => 'Tiny Text',
+		),
+
+	//Display digital format also comes with a picklist. Mimetype of original uploaded file. Should be the mimetype of whatever the instantiation is. Potentially prepopulate. 
+		array(
+			'label' => 'Format', 
+			'name'  => 'Format',
+		),
+
+	//This is not hardcoded.
+		array(
+			'label' => 'Physical Location', 
+			'name'  => 'Physical Location',
+			'description' => 'An address for a physical media item. For an organization or producer acting as caretaker of a media resource, this field may contain information about a specific shelf location for an item, including an organization\'s name, departmental name, shelf ID and contact information.',
+			'data_type'   => 'Tiny Text',
+		 ),
+
+	//AUTOFILL: Internet Archive landing page for the item. Maps to instantiationLocation in PBCore XML.
+		array(
+			'label' => 'Digital Location', 
+			'name'  => 'Digital Location',
+			'description' => 'An address for a digital media item. Employs an unambiguous reference or identifier for a digital rendition/instantiation of a media item and may include domain, path, filename or html page. This includes URIs for each digital file format created by the Internet Archive (will have multiple values).',
+			'data_type'   => 'Tiny Text',
+		  ),
+
+	//AUTOFILL: Can we automatically detect duration of files when they are uploaded?
+		array(
+			'label' => 'Duration', 
+			'name'  => 'Duration',
+		),
+
+		array(
+			'label'       => 'Music/Sound Used', 
+			'name'        => 'Music/Sound Used', 
+			'description' => 'Details on music or other sound clips that contributed to the piece. May include title, artist, album, timestamp, producer and record label information.',
+			'data_type'   => 'Tiny Text',
+		),
+
+		array(
+	   		'label' => 'Date Peg', 
+	   		'name'  => 'Date Peg',
+	   		'description' => 'A holidays or other date relevant to the item.',
+	   		'data_type'   => 'Tiny Text',
+	       ),
+
+		array(
+			'label'       => 'Notes', 
+			'name'        => 'Notes', 
+			'description' => 'Any other notes or information about the media item, including bibliography/research information, contact information, and legacy metadata.',
+			'data_type'   => 'Text',
+		),
+
+		array(
+			'label' => 'Transcription', 
+			'name'  => 'Transcription',
+			'description' => 'The textual transcription of the media item.',
+			'data_type'   => 'Text',
+		  ),
+	);
+	insert_element_set($elementSetMetadata, $elements);
+
+	// Extend the Oral History Item Type to add Broadcast Date & Music/Sound Used
+	$item_type_name = 'Oral History';
+
+	$_elements = array(
+	    array('name'        => 'Broadcast Date',
+	          'description' => '',
+	          'data_type'   => 'Tiny Text'),
+
+	    array('name'        => 'Host',
+	          'description' => '',
+	          'data_type'   => 'Tiny Text'),
+		array(
+			'label'       => 'Music/Sound Used', 
+			'name'        => 'Music', 
+			'description' => 'Details on music or other sound clips that contributed to the piece. May include title, artist, album, timestamp, producer and record label information.',
+			'data_type'   => 'Tiny Text',
+		),
+	);
+	
+	$db = get_db();
+	$itemType = $db->getTable('ItemType')->findByName($item_type_name);
+    $itemType->addElements($_elements);
+    $itemType->save();
+}
+
+add_filter('admin_items_form_tabs', 'pbcore_items_form_tabs');
+
+function pbcore_items_form_tabs($tabs, $item)
 {
-    private $_db;
-    private $_elements;
-    private $_dcElements = array('Title', 'Subject', 'Description', 
-                                 'Creator', 'Source', 'Publisher', 
-                                 'Date', 'Contributor', 'Rights', 
-                                 'Relation', 'Format', 'Language', 
-                                 'Type', 'Identifier', 'Coverage');
-    
-    public function __construct()
-    {
-        $this->_db = get_db();
-        $this->_setElements();
-    }
-    
-    public static function install()
-    {
-        $pbc = new PBCorePlugin;
-        $pbc->_createTable();
-        $pbc->_addElements();
-        $pbc->_insertRelationships();
-    }
-    
-    public static function uninstall()
-    {
-        $pbc = new PBCorePlugin;
-        $pbc->_dropTable();
-        $pbc->_deleteElements();
-        $pbc->_resetOrder();
-    }
-    
-    public static function upgrade($oldVersion, $newVersion)
-    {
-        $db = get_db();
-        switch ($oldVersion) {
-            case '1.0':
-                // Fixes a bug that incorrectly set the record type of the new 
-                // elements to "Item." Sets them to "All" instead.
-                $sql = "
-                UPDATE `{$db->prefix}elements` e 
-                SET e.`record_type_id` = (
-                    SELECT rt.`id` 
-                    FROM `{$db->prefix}record_types` rt 
-                    WHERE rt.`name` = 'All'
-                )
-                WHERE e.`element_set_id` = (
-                    SELECT es.`id` 
-                    FROM `{$db->prefix}element_sets` es 
-                    WHERE es.`name` = 'Dublin Core'
-                )";
-                $db->query($sql);
-            default:
-                break;
-        }
-    }
-    
-    public static function adminAppendToPluginUninstallMessage()
-    {
-        echo '<p><strong>Warning</strong>: This will remove all the PBCore 
-        elements added by this plugin and permanently delete all element texts 
-        entered in those fields.</p>';
-    }
-    
-	public function getElements()
-    {
-        return $this->_elements;
-    }
-
-	public static function outputReponseContext($context)
-	{
-	    $context['pbcore'] = array('suffix'  => 'pbcore', 
-	                            'headers' => array('Content-Type' => 'text/xml'));
-
-	    return $context;
-	}
-
-	public static function outputActionContext($context, $controller)
-	{
-	    if ($controller instanceof ItemsController) {
-	        $context['show'][] = 'pbcore';
-	    }
-
-	    return $context;
-	}
-
-	private function themeHeader()
-	{
-		echo $this->pbcoreOutput();
-	}
-    
-    private function pbcoreOutput()
-	{
-	    $request = Zend_Controller_Front::getInstance()->getRequest();
-
-		if (($request->getControllerName() == 'items' && $request->getActionName() == 'show') || ($request->getControllerName() == 'index' && $request->getActionName() == 'index')) {
-		    return '<link rel="alternate" type="application/rss+xml" href="'.items_output_uri('pbcore').'" id="pbcore"/>' . "\n";
-		}
-	}
-
-    private function _setElements()
-    {
-        include 'elements.php';
-        $this->_elements = $elements;
-    }
-    
-    private function _createTable()
-    {
-        // Create the relationships table. The data in this table isn't used 
-        // yet, but I'm anticipating they will be necessary in the future.
-        $sql = "
-        CREATE TABLE IF NOT EXISTS 
-`{$this->_db->prefix}pbcore_relationships` (
-            `id` int(10) unsigned NOT NULL auto_increment,
-            `element_id` int(10) unsigned NOT NULL,
-            `refines_element_id` int(10) unsigned NOT NULL,
-            PRIMARY KEY  (`id`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $this->_db->query($sql);
-    }
-    
-    private function _addElements()
-    {
-        // Add the new elements to the Dublin Core element set. 
-        $elementSet = $this->_getElementSet();
-        
-        // Temporarily set the order of all elements to NULL.
-        $this->_setNullOrder();
-        
-        // Iterate through the elements.
-        foreach ($this->_elements as $key => $element) {
-            
-            // The element already exists.
-            if (in_array($element['label'], $this->_dcElements)) {
-                $e = $this->_getElement($element['label']);
-            
-            // Build a new element.
-            } else {
-                $e = new Element;
-                $e->record_type_id = $this->_getRecordTypeId('All');
-                $e->data_type_id   = $this->_getDataTypeId($element['data_type']);
-                $e->element_set_id = $elementSet->id;
-                $e->name           = $element['label'];
-                $e->description    = $element['description'];
-            }
-            $e->order = $key + 1;
-            $e->save();
-        }
-    }
-    
-    private function _insertRelationships()
-    {
-        foreach ($this->_elements as $element) {
-            $elementId = $this->_getElement($element['label'])->id;
-            if (isset($element['_refines'])) {
-                $refinesElementId = $this->_getElement($element['_refines'])->id;
-            } else {
-                $refinesElementId = 0;
-            }
-            $sql = "
-            INSERT INTO `{$this->_db->prefix}pbcore_relationships` (
-                `element_id` ,
-                `refines_element_id`
-            ) VALUES (?, ?)";
-            $this->_db->query($sql, array($elementId, $refinesElementId));
-        }
-    }
-    
-    private function _dropTable()
-    {
-        $sql = "DROP TABLE IF EXISTS `{$db->prefix}pbcore_relationships`";
-        $this->_db->query($sql);
-    }
-    
-    private function _deleteElements()
-    {
-        // Delete all the elements and element texts.
-        foreach ($this->_elements as $element) {
-            if (!in_array($element['label'], $this->_dcElements)) {
-                $this->_getElement($element['label'])->delete();
-            }
-        }
-    }
-    
-    private function _resetOrder()
-    {
-        $this->_setNullOrder();
-        
-        foreach ($this->_dcElements as $key => $elementName) {
-            $e = $this->_getElement($elementName);
-            $e->order = $key + 1;
-            $e->save();
-        }
-    }
-    
-    private function _getElementSet()
-    {
-        return $this->_db->getTable('ElementSet')->findByName('Dublin Core');
-    }
-    
-    private function _getElement($elementName)
-    {
-        return $this->_db
-                    ->getTable('Element')
-                    ->findByElementSetNameAndElementName('Dublin Core', $elementName);
-    }
-    
-    private function _getRecordTypeId($recordTypeName)
-    {
-        return $this->_db->getTable('RecordType')->findIdFromName($recordTypeName);
-    }
-    
-    private function _getDataTypeId($dataTypeName)
-    {
-        return $this->_db->getTable('DataType')->findIdFromName($dataTypeName);
-    }
-    
-    private function _setNullOrder()
-    {
-        $sql = "
-        UPDATE `{$this->_db->prefix}elements` e 
-        SET e.`order` = NULL 
-        WHERE e.`element_set_id` = (
-            SELECT es.`id` 
-            FROM `{$this->_db->prefix}element_sets` es 
-            WHERE es.`name` = 'Dublin Core'
-        )";
-        $this->_db->query($sql);
-    }
+	unset($tabs['Dublin Core']);
+	return $tabs;
 }
