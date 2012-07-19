@@ -59,5 +59,6 @@
 	<PBCoreAnnotation annotationType="Transcription"><?php echo item('PBCore', 'Transcription'); ?></PBCoreAnnotation>
 	<PBCoreAnnotation annotationType="Notes"><?php echo item('PBCore', 'Notes'); ?></PBCoreAnnotation>
 	<PBCoreAnnotation annotationType="MusicUsed"><?php echo item('PBCore', 'Music/Sound Used'); ?></PBCoreAnnotation>
+	<PBCoreAnnotation annotationType="DatePeg"><?php echo item('PBCore', 'Date Peg'); ?></PBCoreAnnotation>
 
 </PBCoreDescriptionDocument>
