@@ -6,7 +6,7 @@
 		
 	<?php $item = get_current_item(); ?>
 
-	<PBCoreAssetDate dateType="Broadcast"><?php echo item('Item Type Metadata', 'Broadcast Date'); ?></PBCoreAssetDate>
+	<PBCoreAssetDate dateType="Broadcast"><?php echo item('PBCore', 'Date Broadcast'); ?></PBCoreAssetDate>
 	<PBCoreIdentifier source="Internet Archive"><?php echo item('PBCore', 'Identifier'); ?></PBCoreIdentifier>
 	<PBCoreTitle><?php echo item('PBCore', 'Title'); ?></PBCoreTitle>
 	<PBCoreTitle titleType="Episode"><?php echo item('PBCore', 'Episode Title'); ?></PBCoreTitle>
@@ -19,7 +19,7 @@
 	
 	<PBCoreDescription><?php echo item('PBCore', 'Description'); ?></PBCoreDescription>
 	<PBCoreCoverage>
-		<coverage><?php echo "Not sure where to get geolocation info"; ?></coverage>
+		<coverage><?php if (function_exists('geolocation_get_location_for_item') && geolocation_get_location_for_item($item, true)) { $location = geolocation_get_location_for_item($item, true); echo $location->address; } ?></coverage>
 		<coverageType>Spatial</coverageType>
 	</PBCoreCoverage>
 	<PBCoreCreator>
@@ -28,28 +28,27 @@
 	</PBCoreCreator>   
 
 	<PBCoreContributor>
-		<contributor><?php echo item('Item Type Metadata', 'Interviewee'); ?></contributor>
+		<contributor><?php echo item('PBCore', 'Interviewee'); ?></contributor>
 		<contributorRole><?php echo "Interviewee"; ?></contributorRole>
 	</PBCoreContributor>
 	<PBCoreContributor>	
-		<contributor><?php echo item('Item Type Metadata', 'Interviewer'); ?></contributor>
+		<contributor><?php echo item('PBCore', 'Interviewer'); ?></contributor>
 		<contributorRole><?php echo "Interviewer"; ?></contributorRole>
 	</PBCoreContributor>
 	<PBCoreContributor>
-		<contributor><?php echo item('Item Type Metadata', 'Host'); ?></contributor>
+		<contributor><?php echo item('PBCore', 'Host'); ?></contributor>
 		<contributorRole><?php echo "Host"; ?></contributorRole>
 	</PBCoreContributor>
 
 	<PBCoreRightsSummary>
-	    <rightsSummary></rightsSummary>
+	    <rightsSummary><?php echo item('PBCore', 'Rights'); ?></rightsSummary>
 	</PBCoreRightsSummary>
 
-	<!-- loop files here.. need to know how they're stored. -->
 	<PBCoreInstantiation>
-		<instantiationIdentifier source="Filename"><?php echo "Not sure how to pull filename from Omeka DB"; ?></instantiationIdentifier>
+		<instantiationIdentifier source="Filename"><?php echo item('PBCore', 'Identifier'); ?></instantiationIdentifier>
 		<instantiationDigital><?php echo item('PBCore', 'Format'); ?></instantiationDigital>
 		<instantiationLocation><?php echo item('PBCore', 'Digital Location'); ?></instantiationLocation>
-		<instantiationDuration><?php echo item('Item Type Metadata', 'Duration'); ?></instantiationLocation>
+		<instantiationDuration><?php echo item('PBCore', 'Duration'); ?></instantiationDuration>
 	</PBCoreInstantiation>
 	
 	<PBCoreInstantiation>
@@ -58,7 +57,7 @@
 	</PBCoreInstantiation>
 
 	<PBCoreAnnotation annotationType="Transcription"><?php echo item('PBCore', 'Transcription'); ?></PBCoreAnnotation>
-	<PBCoreAnnotation annotationType="Notes"><?php //echo item('PBCore', 'Notes'); ?></PBCoreAnnotation>
-	<PBCoreAnnotation annotationType="MusicUsed"><?php //echo item('PBCore', 'Music Used'); ?></PBCoreAnnotation>
+	<PBCoreAnnotation annotationType="Notes"><?php echo item('PBCore', 'Notes'); ?></PBCoreAnnotation>
+	<PBCoreAnnotation annotationType="MusicUsed"><?php echo item('PBCore', 'Music/Sound Used'); ?></PBCoreAnnotation>
 
 </PBCoreDescriptionDocument>
