@@ -8,7 +8,11 @@
 
 	<PBCoreAssetDate dateType="Broadcast"><?php echo item('PBCore', 'Date Broadcast'); ?></PBCoreAssetDate>
 	<PBCoreIdentifier source="Internet Archive"><?php echo item('PBCore', 'Identifier'); ?></PBCoreIdentifier>
-	<PBCoreTitle><?php echo item('PBCore', 'Title'); ?></PBCoreTitle>
+
+	<?php foreach (item('PBCore', 'Title', array('all'=>true)) as $title) { ?>
+	<PBCoreTitle><?php echo $title; ?></PBCoreTitle>
+	<?php } ?>
+
 	<PBCoreTitle titleType="Episode"><?php echo item('PBCore', 'Episode Title'); ?></PBCoreTitle>
 	<PBCoreTitle titleType="Series"><?php echo item('PBCore', 'Series Title'); ?></PBCoreTitle>
 
