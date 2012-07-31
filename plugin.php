@@ -1,5 +1,6 @@
 <?php
 add_plugin_hook('install', 'install');
+add_plugin_hook('install', 'uninstall');
 add_filter('define_response_contexts', 'pbcoreOutputReponseContext');
 add_filter('define_action_contexts', 'pbcoreOutputActionContext');
 add_plugin_hook('public_theme_header', 'pbcoreThemeHeader');
@@ -175,6 +176,11 @@ function install() {
 	$itemType = $db->getTable('ItemType')->findByName($item_type_name);
     $itemType->addElements($_elements);
     $itemType->save();
+}
+
+function uninstall()
+{
+	
 }
 
 add_filter('admin_items_form_tabs', 'pbcore_items_form_tabs');
