@@ -1,6 +1,6 @@
 <?php
 add_plugin_hook('install', 'install');
-add_plugin_hook('install', 'uninstall');
+add_plugin_hook('uninstall', 'uninstall');
 add_filter('define_response_contexts', 'pbcoreOutputReponseContext');
 add_filter('define_action_contexts', 'pbcoreOutputActionContext');
 add_plugin_hook('public_theme_header', 'pbcoreThemeHeader');
